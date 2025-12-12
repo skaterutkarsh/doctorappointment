@@ -1,12 +1,12 @@
 System Design Document - Doctor Appointment Booking System
 
  1. High-Level Architecture
-The system uses a **Monolithic Layered Architecture** for simplicity and correctness in this assessment, but it is structured to be easily split into microservices (Booking Service, User Service).
+The system uses a Monolithic Layered Architecture for simplicity and correctness in this assessment, but it is structured to be easily split into microservices (Booking Service, User Service).
 
 Components:
-Client (React + Vite):** Handles UI, State (TanStack Query), and optimistic updates where safe.
-Server (Node + Express):** Stateless REST API layer.
-Database (PostgreSQL):** Relational source of truth.
+Client (React + Vite): Handles UI, State (TanStack Query), and optimistic updates where safe.
+Server (Node + Express):Stateless REST API layer.
+Database (PostgreSQL): Relational source of truth.
 
  2. Concurrency Handling (The Core Problem)
 The most critical requirement was preventing Double Booking (Race Conditions) when multiple users try to book the same slot simultaneously.
