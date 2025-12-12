@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Doctor {
+  id             String   @id @default(uuid())
+  name           String
+  specialization String
+  bio            String?
+  slots          Slot[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+
+model Slot {
+  id        String     @id @default(uuid())
+  doctorId  String
+  doctor    Doctor     @relation(fields: [doctorId], references: [id])
+  startTime DateTime
+  status    String     @default("AVAILABLE") // AVAILABLE, LOCKED, BOOKED
+  
+  // Concurrency Locking fields
+  lockedAt  DateTime?  
+  version   Int        @default(0) 
+
+  booking   Booking?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([doctorId])
+  @@index([startTime])
+}
+
+model Booking {
+  id          String        @id @default(uuid())
+  slotId      String        @unique 
+  slot        Slot          @relation(fields: [slotId], references: [id])
+  patientName String
+  patientEmail String?
+  status      String        @default("PENDING") // PENDING, CONFIRMED, FAILED
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
